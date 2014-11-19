@@ -32,12 +32,10 @@
 		this.livesText = null;
 
 		// new properties that I've added.
-		this.xDirection = 2;
-		this.yDirection = 3;
+		this.xDirection = -1;
+		this.yDirection = 6;
 		this.easing = 7;
 		this.isPlaying = false;
-		this.bricks = [];
-
 		
 		// add the container to the stage
 		this.stage.addChild(this.gameContainer);
@@ -115,29 +113,27 @@
 			}
 
 			// if the ball hits a brick
-			for(var i = 0; i < this.bricks.length; i++){
-				var brick = this.bricks[i];
+
+			for(var i = 0; i < this.brickContainer.children.length; i++){
+				var brick = this.brickContainer.children[i];
 				var xcol = brick.position.x - this.ball.position.x;
 				if(xcol > -brick.width/2 && xcol < brick.width/2){
 					var ycol = brick.position.y - this.ball.position.y;
 					if(ycol > -brick.height/2 && ycol < brick.height/2){
-						// this.bricks.splice(brick[i], 1);
 						this.yDirection *= -1;
 						this.brickContainer.removeChild(brick);
-						this.brickContainer.removeStageReference(brick);
-						// trace(brick);
 					}
 				}
 			}
 
 			// if user presses left arrow
 			if(paddleLeft){
-				this.paddle.position.x -= 5;
+				this.paddle.position.x -= 10;
 			}
 
 			// if user presses right arrow
 			if(paddleRight){
-				this.paddle.position.x += 5;
+				this.paddle.position.x += 10;
 			}
 		}
 	};
@@ -226,7 +222,7 @@
 				this.brickContainer.position.x = 0;
 				this.brickContainer.position.y = 0;
 				this.brickContainer.addChild(brick);
-				this.bricks.push(brick);
+				// this.bricks.push(brick);
 			}
 		}
 		this.gameContainer.addChild(this.brickContainer);
