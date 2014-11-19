@@ -2,8 +2,13 @@
 	"folders":
 	[
 		{
+      "name": "Brick Breaker Pixi JS",
 			"follow_symlinks": true,
 			"path": "/Users/jason/Dropbox/Personal/cloudkid-tests/JSProgrammingTest"
-		}
+		},
+    {
+      "name": "Code Library",
+      "path": "/Users/jason/Documents/UI"
+    }
 	]
 }

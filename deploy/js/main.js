@@ -1,5 +1,6 @@
 (function(){
 	
+	var trace = function(){ for(var i = 0; i < arguments.length; i++){ console.log(arguments[i]); } };
 	/**
 	*  The main game class
 	*  @class  BrickBreaker 
@@ -27,6 +28,12 @@
 		this.levelText = null;
 		this.scoreText = null;
 		this.livesText = null;
+
+		// 
+		this.xDirection = 5;
+		this.yDirection = 2;
+		this.easing = 7;
+
 
 		// add the container to the stage
 		this.stage.addChild(this.gameContainer);
@@ -65,6 +72,42 @@
 	{
 		requestAnimFrame(this.animate);
 		this.renderer.render(this.stage);
+		
+		// get the ball from the gameContainer
+		// must be better way than by index????
+		var ball = this.gameContainer.getChildAt(56);
+		
+		// logic for ball bouncing off the walls
+		if(ball.position.x <= 0){
+			this.xDirection *= -1;
+		} else if(ball.position.x >= 640 - ball.width) {
+			this.xDirection *= -1;
+		}
+
+		// logic for ball bouncing off the roof
+		if(ball.position.y >= 480){
+			this.livesRemaining--;
+			// session ends
+			// this.initGameState();
+		} else if(ball.position.y <= 0) {
+			this.yDirection *= -1;
+		}
+
+		// trace(ball.position.x, ball.position.y);
+		ball.position.y -= this.yDirection;
+		ball.position.x += this.xDirection;
+	};
+
+	p.leftArrowPressed = function(){
+		trace('pressing left arrow');
+		var paddle = this.gameContainer.getChildAt(55);
+		paddle.position.x -= this.xDirection;
+	};
+
+	p.rightArrowPressed = function(){
+		trace('pressing right arrow');
+		var paddle = this.gameContainer.getChildAt(55);
+		paddle.position.x += this.xDirection;
 	};
 
 	/**
@@ -80,7 +123,6 @@
 		playButton.mouseup = this.leaveTitleState.bind(this);
 		playButton.position.x = 320 - Math.round(playButton.texture.width/2);
 		playButton.position.y = 240 - Math.round(playButton.texture.height/2);
-
 		this.gameContainer.addChild(playButton);
 	};
 
@@ -148,14 +190,24 @@
 		var ball = PIXI.Sprite.fromFrame("Ball0000");
 		ball.position.x = 320 - Math.round(ball.texture.width/2);
 		ball.position.y = 250;
+		ball.id = "ball";
 		this.gameContainer.addChild(ball);
 
-		//TODO: gameplay
+		document.onkeydown = function(e){
+			e = e || window.event;
+			switch(e.keyCode){
+				case 37: 
+					this.leftArrowPressed();
+					break;
+				case 39:
+					this.rightArrowPressed();
+					break;
+				}
+		};
+		
 	};
 
-	p.enterGameState = function(){
-
-	};
+	
 
 	/**
 	*  Leave the game state

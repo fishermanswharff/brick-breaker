@@ -1,99 +1,99 @@
 ﻿{"frames": {
 
-"Ball0000":
-{
-	"frame": {"x":115,"y":75,"w":10,"h":10},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":10,"h":10},
-	"sourceSize": {"w":10,"h":10}
-},
-"Brick0000":
-{
-	"frame": {"x":0,"y":100,"w":70,"h":15},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":70,"h":15},
-	"sourceSize": {"w":70,"h":15}
-},
-"Brick0001":
-{
-	"frame": {"x":0,"y":115,"w":70,"h":15},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":70,"h":15},
-	"sourceSize": {"w":70,"h":15}
-},
-"Brick0002":
-{
-	"frame": {"x":0,"y":130,"w":70,"h":15},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":70,"h":15},
-	"sourceSize": {"w":70,"h":15}
-},
-"Brick0003":
-{
-	"frame": {"x":0,"y":145,"w":70,"h":15},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":70,"h":15},
-	"sourceSize": {"w":70,"h":15}
-},
-"Brick0004":
-{
-	"frame": {"x":0,"y":160,"w":70,"h":15},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":70,"h":15},
-	"sourceSize": {"w":70,"h":15}
-},
-"Paddle0000":
-{
-	"frame": {"x":70,"y":160,"w":55,"h":10},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":10},
-	"sourceSize": {"w":55,"h":10}
-},
-"PlayButton0000":
-{
-	"frame": {"x":0,"y":0,"w":115,"h":25},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":115,"h":25},
-	"sourceSize": {"w":115,"h":25}
-},
-"QuitButton0000":
-{
-	"frame": {"x":0,"y":25,"w":67,"h":25},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":67,"h":25},
-	"sourceSize": {"w":67,"h":25}
-},
-"ReplayButton0000":
-{
-	"frame": {"x":0,"y":50,"w":115,"h":25},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":115,"h":25},
-	"sourceSize": {"w":115,"h":25}
-},
-"TryAgainButton0000":
-{
-	"frame": {"x":0,"y":75,"w":115,"h":25},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":115,"h":25},
-	"sourceSize": {"w":115,"h":25}
-}},
-"meta": {
-	"app": "Adobe Flash Professional",
-	"version": "14.1.0.96",
-	"image": "images.png",
-	"format": "RGBA8888",
-	"size": {"w":128,"h":256},
-	"scale": "1"
-}
+	"Ball0000":
+	{
+		"frame": {"x":115,"y":75,"w":10,"h":10},
+		"rotated": false,
+		"trimmed": false,
+		"spriteSourceSize": {"x":0,"y":0,"w":10,"h":10},
+		"sourceSize": {"w":10,"h":10}
+	},
+	"Brick0000":
+	{
+		"frame": {"x":0,"y":100,"w":70,"h":15},
+		"rotated": false,
+		"trimmed": false,
+		"spriteSourceSize": {"x":0,"y":0,"w":70,"h":15},
+		"sourceSize": {"w":70,"h":15}
+	},
+	"Brick0001":
+	{
+		"frame": {"x":0,"y":115,"w":70,"h":15},
+		"rotated": false,
+		"trimmed": false,
+		"spriteSourceSize": {"x":0,"y":0,"w":70,"h":15},
+		"sourceSize": {"w":70,"h":15}
+	},
+	"Brick0002":
+	{
+		"frame": {"x":0,"y":130,"w":70,"h":15},
+		"rotated": false,
+		"trimmed": false,
+		"spriteSourceSize": {"x":0,"y":0,"w":70,"h":15},
+		"sourceSize": {"w":70,"h":15}
+	},
+	"Brick0003":
+	{
+		"frame": {"x":0,"y":145,"w":70,"h":15},
+		"rotated": false,
+		"trimmed": false,
+		"spriteSourceSize": {"x":0,"y":0,"w":70,"h":15},
+		"sourceSize": {"w":70,"h":15}
+	},
+	"Brick0004":
+	{
+		"frame": {"x":0,"y":160,"w":70,"h":15},
+		"rotated": false,
+		"trimmed": false,
+		"spriteSourceSize": {"x":0,"y":0,"w":70,"h":15},
+		"sourceSize": {"w":70,"h":15}
+	},
+	"Paddle0000":
+	{
+		"frame": {"x":70,"y":160,"w":55,"h":10},
+		"rotated": false,
+		"trimmed": false,
+		"spriteSourceSize": {"x":0,"y":0,"w":55,"h":10},
+		"sourceSize": {"w":55,"h":10}
+	},
+	"PlayButton0000":
+	{
+		"frame": {"x":0,"y":0,"w":115,"h":25},
+		"rotated": false,
+		"trimmed": false,
+		"spriteSourceSize": {"x":0,"y":0,"w":115,"h":25},
+		"sourceSize": {"w":115,"h":25}
+	},
+	"QuitButton0000":
+	{
+		"frame": {"x":0,"y":25,"w":67,"h":25},
+		"rotated": false,
+		"trimmed": false,
+		"spriteSourceSize": {"x":0,"y":0,"w":67,"h":25},
+		"sourceSize": {"w":67,"h":25}
+	},
+	"ReplayButton0000":
+	{
+		"frame": {"x":0,"y":50,"w":115,"h":25},
+		"rotated": false,
+		"trimmed": false,
+		"spriteSourceSize": {"x":0,"y":0,"w":115,"h":25},
+		"sourceSize": {"w":115,"h":25}
+	},
+	"TryAgainButton0000":
+	{
+		"frame": {"x":0,"y":75,"w":115,"h":25},
+		"rotated": false,
+		"trimmed": false,
+		"spriteSourceSize": {"x":0,"y":0,"w":115,"h":25},
+		"sourceSize": {"w":115,"h":25}
+	}},
+	"meta": {
+		"app": "Adobe Flash Professional",
+		"version": "14.1.0.96",
+		"image": "images.png",
+		"format": "RGBA8888",
+		"size": {"w":128,"h":256},
+		"scale": "1"
+	}
 }
