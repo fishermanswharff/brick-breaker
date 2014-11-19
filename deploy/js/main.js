@@ -30,8 +30,8 @@
 		this.livesText = null;
 
 		// 
-		this.xDirection = 5;
-		this.yDirection = 2;
+		this.xDirection = 2;
+		this.yDirection = 5;
 		this.easing = 7;
 		
 		// add the container to the stage
@@ -71,10 +71,12 @@
 	{
 		requestAnimFrame(this.animate);
 		this.renderer.render(this.stage);
+
 		// get the ball from the gameContainer
 		// must be better way than by index????
 		var ball = this.gameContainer.getChildAt(56);
-		
+		var paddle = this.gameContainer.getChildAt(55);
+
 		// logic for ball bounces off the walls
 		if(ball.position.x <= 0){
 			this.xDirection *= -1;
@@ -94,6 +96,25 @@
 		// trace(ball.position.x, ball.position.y);
 		ball.position.y -= this.yDirection;
 		ball.position.x += this.xDirection;
+
+		var xdist = ball.position.x - paddle.position.x;
+		if(xdist > -paddle.width/2 && xdist < paddle.width/2){
+			var ydist = paddle.position.y - ball.position.y;
+			if(ydist > - paddle.height/2 && ydist < paddle.height/2){
+				this.yDirection *= -1;
+				this.checkHitLocation(ball,paddle);
+				// trace('hit code!!!');
+			}
+		}
+		
+	};
+
+	p.checkHitLocation = function(ball,paddle){
+		var hitPercent, ballPosition;
+		ballPosition = ball.position.x - paddle.position.x;
+		hitPercent = (ballPosition / (paddle.width - ball.width)) - .5;
+		this.xDirection = hitPercent * 10;
+		this.yDirection *= 1.05;
 	};
 
 	/**
@@ -171,11 +192,15 @@
 		var paddle = PIXI.Sprite.fromFrame("Paddle0000");
 		paddle.position.x = 320 - Math.round(paddle.texture.width/2);
 		paddle.position.y = 400;
+		paddle.anchor.x = 0.5;
+		paddle.anchor.y = 0.5;
 		this.gameContainer.addChild(paddle);
 
 		var ball = PIXI.Sprite.fromFrame("Ball0000");
 		ball.position.x = 320 - Math.round(ball.texture.width/2);
 		ball.position.y = 250;
+		ball.anchor.x = 0.5;
+		ball.anchor.y = 0.5;
 		this.gameContainer.addChild(ball);
 		
 		// listen for keyboard events, pass in `this` to maintain scope of the pixi object
@@ -199,11 +224,11 @@
 
 
 	p.leftKeyPressed = function(object){
-		object.position.x -= 10;
+		object.position.x -= 12;
 	};
 
 	p.rightKeyPressed = function(object){
-		object.position.x += 10;
+		object.position.x += 12;
 	};
 	
 
@@ -279,4 +304,3 @@
 	new BrickBreaker();
 	
 }());
-
