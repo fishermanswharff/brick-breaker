@@ -33,8 +33,7 @@
 		this.xDirection = 5;
 		this.yDirection = 2;
 		this.easing = 7;
-
-
+		
 		// add the container to the stage
 		this.stage.addChild(this.gameContainer);
 
@@ -72,12 +71,11 @@
 	{
 		requestAnimFrame(this.animate);
 		this.renderer.render(this.stage);
-		
 		// get the ball from the gameContainer
 		// must be better way than by index????
 		var ball = this.gameContainer.getChildAt(56);
 		
-		// logic for ball bouncing off the walls
+		// logic for ball bounces off the walls
 		if(ball.position.x <= 0){
 			this.xDirection *= -1;
 		} else if(ball.position.x >= 640 - ball.width) {
@@ -86,9 +84,9 @@
 
 		// logic for ball bouncing off the roof
 		if(ball.position.y >= 480){
-			this.livesRemaining--;
 			// session ends
 			// this.initGameState();
+			// this.livesRemaining--;
 		} else if(ball.position.y <= 0) {
 			this.yDirection *= -1;
 		}
@@ -96,18 +94,6 @@
 		// trace(ball.position.x, ball.position.y);
 		ball.position.y -= this.yDirection;
 		ball.position.x += this.xDirection;
-	};
-
-	p.leftArrowPressed = function(){
-		trace('pressing left arrow');
-		var paddle = this.gameContainer.getChildAt(55);
-		paddle.position.x -= this.xDirection;
-	};
-
-	p.rightArrowPressed = function(){
-		trace('pressing right arrow');
-		var paddle = this.gameContainer.getChildAt(55);
-		paddle.position.x += this.xDirection;
 	};
 
 	/**
@@ -190,23 +176,35 @@
 		var ball = PIXI.Sprite.fromFrame("Ball0000");
 		ball.position.x = 320 - Math.round(ball.texture.width/2);
 		ball.position.y = 250;
-		ball.id = "ball";
 		this.gameContainer.addChild(ball);
-
-		document.onkeydown = function(e){
-			e = e || window.event;
-			switch(e.keyCode){
-				case 37: 
-					this.leftArrowPressed();
-					break;
-				case 39:
-					this.rightArrowPressed();
-					break;
-				}
-		};
 		
+		// listen for keyboard events, pass in `this` to maintain scope of the pixi object
+		this.addListeners(this);
 	};
 
+	p.addListeners = function(object){
+		document.addEventListener('keydown',function(evt){
+			switch(evt.which){
+				case 37:
+					// ew
+					BrickBreaker.prototype.leftKeyPressed(object.gameContainer.getChildAt(55));
+					break;
+				case 39:
+					// ew
+					BrickBreaker.prototype.rightKeyPressed(object.gameContainer.getChildAt(55));
+					break;
+			}
+		});
+	};
+
+
+	p.leftKeyPressed = function(object){
+		object.position.x -= 10;
+	};
+
+	p.rightKeyPressed = function(object){
+		object.position.x += 10;
+	};
 	
 
 	/**
@@ -279,5 +277,6 @@
 
 	// Create the game
 	new BrickBreaker();
-
+	
 }());
+
