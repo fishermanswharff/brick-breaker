@@ -84,7 +84,7 @@
 			}
 
 			// logic for ball bouncing off the roof
-			if(this.ball.position.y >= 480){
+			if(this.ball.position.y >= 480 - this.ball.height/2){
 				this.isPlaying = false;
 				this.loseLife();
 			} else if(this.ball.position.y <= 0) {
@@ -98,7 +98,7 @@
 			// if the ball hits the paddle
 			var xdist = (this.ball.position.x + this.ball.width/2) - (this.paddle.position.x + this.paddle.width/2);
 			if(xdist > -this.paddle.width/2 && xdist < this.paddle.width/2){
-				var ydist = (this.paddle.position.y + (this.paddle.height/2)) - (this.ball.position.y + (this.ball.height/2)) ;
+				var ydist = this.paddle.position.y - (this.ball.position.y + (this.ball.height/2));
 				if(ydist > - this.paddle.height/2 && ydist < this.paddle.height/2){
 					this.yDirection *= -1;
 					this.checkHitLocation(this.ball,this.paddle);
@@ -107,13 +107,26 @@
 
 			// if the ball hits a brick
 			for(var i = 0; i < this.brickContainer.children.length; i++){
+
+				// for testing purposes
+				this.brickContainer.removeChild(brick);
+
 				var brick = this.brickContainer.children[i];
 				var xcol = (this.ball.position.x + this.ball.width/2) - (brick.position.x + brick.width/2);
-				// var xcol = brick.position.x - (this.ball.position.x + this.ball.width/2);
 				if(xcol > -brick.width/2 && xcol < brick.width/2){
-					var ycol = brick.position.y - this.ball.position.y;
+					var ycol = (brick.position.y + brick.height) - this.ball.position.y;
 					if(ycol > -brick.height/2 && ycol < brick.height/2){
 						this.yDirection *= -1;
+						this.brickContainer.removeChild(brick);
+						this.gameScore += 10;
+						this.updateScoreDisplay();
+					}
+				}
+				var yrow = (this.ball.position.y + this.ball.height/2) - (brick.position.y + brick.height/2);
+				if(yrow > -brick.height/2 && yrow < brick.height/2){
+					var xrow = (brick.position.x + brick.height) - this.ball.position.x;
+					if(xrow > -brick.width/2 && xrow < brick.width/2){
+						this.xDirection += -1;
 						this.brickContainer.removeChild(brick);
 						this.gameScore += 10;
 						this.updateScoreDisplay();
@@ -136,6 +149,11 @@
 					this.paddle.position.x = 640 - this.paddle.width;
 				}
 			}
+		
+			if(this.brickContainer.children.length == 0){
+				this.isPlaying = false;
+				this.levelUp();
+			}
 		}
 
 		if(!this.isPlaying){
@@ -149,7 +167,7 @@
 		ballPosition = ball.position.x - paddle.position.x;
 		hitPercent = (ballPosition / (paddle.width - ball.width)) - .5;
 		this.xDirection = hitPercent * 7;
-		this.yDirection *= 1.01;
+		this.yDirection *= 1.001;
 	};
 
 	p.loseLife = function(){
@@ -164,8 +182,25 @@
 	};
 
 	p.levelUp = function(){
+		if (!this.levelUpText)
+		{
+			this.levelUpText = new PIXI.Text("", {font: "25px Helvetica, Arial", fill: "#ffffff"});
+			this.levelUpText.anchor.x = 0.5;
+			this.levelUpText.anchor.y = 0.5;
+			this.levelUpText.position.x = 320;
+			this.levelUpText.position.y = 300;
+		}
+		this.gameContainer.addChild(this.levelUpText);
 		this.currentLevel++;
 		this.updateLevelDisplay();
+
+		if(this.currentLevel > 3){
+			this.winning();
+			this.levelUpText.setText("You Won The Internet!!!");
+		} else {
+			this.nextLevelSetup();
+			this.levelUpText.setText("Well done, you have advanced one level up.");
+		}
 	};
 
 	p.resetDefaults = function(){
@@ -247,7 +282,16 @@
 		var paddle = PIXI.Sprite.fromFrame("Paddle0000");
 		paddle.position.x = 320 - Math.round(paddle.texture.width/2);
 		paddle.position.y = 400;
-		paddle.width = paddle.width * 2
+		
+		// double paddle
+		// paddle.width = paddle.width * 2;
+
+		// triple paddle
+		paddle.width = paddle.width * 3;
+
+		// full size paddle 
+		// paddle.width = paddle.width * 4;
+
 		this.gameContainer.addChild(paddle);
 		this.paddle = paddle;
 	};
@@ -279,6 +323,7 @@
 
 	// listen for keydown, attached to the document
 	p.addKeyListeners = function(){
+		
 		document.addEventListener('keydown',function(evt){
 			switch(evt.which){
 				case 37:
@@ -289,7 +334,7 @@
 					break;
 			}
 		});
-		// listen for keyup, attached to the document
+		
 		document.addEventListener('keyup',function(evt){
 			switch(evt.which){
 				case 37:
@@ -353,16 +398,26 @@
 		this.livesText.setText("Lives: " + this.livesRemaining);
 	};
 
+	p.nextLevelSetup = function(){
+		var playButton = PIXI.Sprite.fromFrame("PlayButton0000");
+		playButton.buttonMode = true;
+		playButton.interactive = true;
+		playButton.mouseup = this.continueGame.bind(this);
+		playButton.position.x = 320 - Math.round(playButton.texture.width/2);
+		playButton.position.y = 240 - Math.round(playButton.texture.height/2);
+		this.gameContainer.addChild(playButton);
+	};
+
 	p.resetGame = function(){
 		if (!this.loseText)
 		{
 			this.loseText = new PIXI.Text("", {font: "40px Helvetica, Arial", fill: "#000"});
-			this.gameContainer.addChild(this.loseText);
 			this.loseText.anchor.x = 0.5;
 			this.loseText.anchor.y = 0.5;
 			this.loseText.position.x = 320;
 			this.loseText.position.y = 280;
 		}
+		this.gameContainer.addChild(this.loseText);
 		this.loseText.setText("You Lose!!!");
 
 		var playButton = PIXI.Sprite.fromFrame("PlayButton0000");
@@ -375,8 +430,11 @@
 	};
 
 	p.continueGame = function(evt){
+		// this.levelUpText = null;
+		// this.lostText = null;
 		this.gameContainer.removeChild(evt.target);
 		this.gameContainer.removeChild(this.loseText);
+		this.gameContainer.removeChild(this.levelUpText);
 		this.brickContainer.removeChildren();
 		this.gameContainer.removeChild(this.brickContainer);
 		this.gameContainer.removeChild(this.ball);
@@ -399,6 +457,10 @@
 		}
 		this.overText.setText("Game Over");
 		window.setTimeout(this.leaveGameState.bind(this),3000);
+	};
+
+	p.winning = function(){
+		// Todo: allow for replaying the game
 	};
 
 	/**
