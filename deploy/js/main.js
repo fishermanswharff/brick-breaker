@@ -74,7 +74,7 @@
 	{
 		requestAnimFrame(this.animate);
 		this.renderer.render(this.stage);
-		// trace(frame);
+		
 		if(this.isPlaying){
 			// logic for ball bouncing off the walls
 			if(this.ball.position.x <= 0){
@@ -83,7 +83,7 @@
 				this.xDirection *= -1;
 			}
 
-			// logic for ball bouncing off the roof
+			// logic for ball bouncing off the roof or falling through the floor
 			if(this.ball.position.y >= 480 - this.ball.height/2){
 				this.isPlaying = false;
 				this.loseLife();
@@ -107,10 +107,12 @@
 
 			// if the ball hits a brick
 			for(var i = 0; i < this.brickContainer.children.length; i++){
+
+				// if the ball hits the top/bottom of a brick
 				var brick = this.brickContainer.children[i];
 				var xcol = (this.ball.position.x + this.ball.width/2) - (brick.position.x + brick.width/2);
 				if(xcol > -brick.width/2 && xcol < brick.width/2){
-					var ycol = (brick.position.y + brick.height) - this.ball.position.y;
+					var ycol = (brick.position.y + brick.height/2) - (this.ball.position.y + this.ball.height/2);
 					if(ycol > -brick.height/2 && ycol < brick.height/2){
 						this.yDirection *= -1;
 						this.brickContainer.removeChild(brick);
@@ -118,6 +120,7 @@
 						this.updateScoreDisplay();
 					}
 				}
+				// if the ball hits the sides of a brick
 				var yrow = (this.ball.position.y + this.ball.height/2) - (brick.position.y + brick.height/2);
 				if(yrow > -brick.height/2 && yrow < brick.height/2){
 					var xrow = (brick.position.x + brick.height) - this.ball.position.x;
@@ -301,22 +304,8 @@
 	};
 
 	p.buildBricks = function(){
-		
-		/*
-		for (var col=0;col < 9;col++)
-		{
-			for (var row=0;row < 6;row++)
-			{
-				var brick = PIXI.Sprite.fromFrame("Brick000" + Math.floor(Math.random() * 4));
-				brick.position.x = col * (brick.texture.width + 1);
-				brick.position.y = row * (brick.texture.height + 1);
-				this.brickContainer.addChild(brick);
-			}
-		}
-		*/
 
 		this.brickContainer = new PIXI.DisplayObjectContainer();
-		
 		// object of multiple x*y arrays, with 0/1 values, or colors in hex
 		var levels = {
 			level1: 
