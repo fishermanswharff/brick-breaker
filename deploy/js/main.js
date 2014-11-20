@@ -148,19 +148,19 @@
 					this.paddle.position.x = 640 - this.paddle.width;
 				}
 			}
-		
+			
+			// if there are no more bricks, levelUp
 			if(this.brickContainer.children.length == 0){
 				this.isPlaying = false;
 				this.levelUp();
 			}
 		}
-
-		if(!this.isPlaying){
-
-		}
 	};
-
-	// checking hit location on the paddle to adjust for ball trajectory
+	
+	/**
+	*		Check the hit location/percentage of the ball on the paddle, adjust trajectory and speed accordingly
+	*		@method checkHitLocation
+	*/
 	p.checkHitLocation = function(ball,paddle){
 		var hitPercent, ballPosition;
 		ballPosition = ball.position.x - paddle.position.x;
@@ -169,6 +169,10 @@
 		this.yDirection *= 1.001;
 	};
 
+	/*
+	* 	Happens when the ball falls through the floor
+	*		@method loseLife
+	*/
 	p.loseLife = function(){
 		this.livesRemaining--;
 		this.updateLivesDisplay();
@@ -180,6 +184,10 @@
 		this.resetDefaults();
 	};
 
+	/*
+	* 	breaking all the bricks
+	* 	@method levelUp
+	*/
 	p.levelUp = function(){
 		if (!this.levelUpText)
 		{
@@ -202,6 +210,10 @@
 		}
 	};
 
+	/*
+	* 	Reset the speed and direction of the ball
+	* 	@method resetDefaults
+	*/
 	p.resetDefaults = function(){
 		// new properties that I've added.
 		this.xDirection = -1;
@@ -256,6 +268,10 @@
 		this.isPlaying = true;
 	};
 
+	/*
+	* 	Builds UI 
+	* 	@method buildUiHolder
+	*/
 	p.buildUiHolder = function(){
 		// add UI
 		//basic grey background shape
@@ -266,6 +282,10 @@
 		this.gameContainer.addChild(this.uiHolder);
 	};
 
+	/*
+	*   Builds Quit Button
+	* 	@method buildQuitButton
+	*/
 	p.buildQuitButton = function(){
 		// quit button
 		var quitButton = PIXI.Sprite.fromFrame("QuitButton0000");
@@ -277,6 +297,10 @@
 		this.uiHolder.addChild(quitButton);
 	};
 
+	/*
+	* 	Builds Paddle
+	*		@method buildPaddle
+	*/
 	p.buildPaddle = function(){
 		var paddle = PIXI.Sprite.fromFrame("Paddle0000");
 		paddle.position.x = 320 - Math.round(paddle.texture.width/2);
@@ -295,6 +319,10 @@
 		this.paddle = paddle;
 	};
 
+	/*
+	* 	Builds ball
+	*		@method buildBall
+	*/
 	p.buildBall = function(){
 		var ball = PIXI.Sprite.fromFrame("Ball0000");
 		ball.position.x = 320 - Math.round(ball.texture.width/2);
@@ -303,6 +331,10 @@
 		this.ball = ball;
 	};
 
+	/*
+	* 	Builds all the bricks, depending on currentLevel 
+	*		@method buildBricks
+	*/
 	p.buildBricks = function(){
 
 		this.brickContainer = new PIXI.DisplayObjectContainer();
@@ -386,6 +418,10 @@
 	};
 
 	// listen for keydown, attached to the document
+	/*
+	* 	Event listeners for keyboard arrow events
+	*	 	@method addKeyListeners
+	*/
 	p.addKeyListeners = function(){
 		
 		document.addEventListener('keydown',function(evt){
@@ -462,6 +498,10 @@
 		this.livesText.setText("Lives: " + this.livesRemaining);
 	};
 
+	/*
+	* 	Sets up gameContainer for the next level
+	*		@method nextLevelSetup
+	*/
 	p.nextLevelSetup = function(){
 		var playButton = PIXI.Sprite.fromFrame("PlayButton0000");
 		playButton.buttonMode = true;
@@ -472,6 +512,10 @@
 		this.gameContainer.addChild(playButton);
 	};
 
+	/*
+	* 	Resets gameContainer upon losing
+	*		@method resetGame
+	*/
 	p.resetGame = function(){
 		if (!this.loseText)
 		{
@@ -493,6 +537,10 @@
 		this.gameContainer.addChild(playButton);
 	};
 
+	/*
+	* 	Continues after either a loss or win
+	*		@method continueGame
+	*/
 	p.continueGame = function(evt){
 		// this.levelUpText = null;
 		// this.lostText = null;
@@ -506,23 +554,32 @@
 		this.buildBricks();
 		this.buildPaddle();
 		this.buildBall();
+		this.resetDefaults();
 		this.isPlaying = true;
 	};
 
+	/*
+	* 	Lost all your lives
+	*		@method gameOver
+	*/
 	p.gameOver = function(){
 		if (!this.overText)
 		{
-			this.overText = new PIXI.Text("", {font: "50px Helvetica, Arial", fill: "#ffffff"});
+			this.overText = new PIXI.Text("", {font: "50px Helvetica, Arial", fill: "#000"});
 			this.gameContainer.addChild(this.overText);
 			this.overText.anchor.x = 0.5;
 			this.overText.anchor.y = 0.5;
 			this.overText.position.x = 320;
-			this.overText.position.y = 100;
+			this.overText.position.y = 280;
 		}
 		this.overText.setText("Game Over");
 		window.setTimeout(this.leaveGameState.bind(this),3000);
 	};
 
+	/*
+	* 	You completed all the levels!
+	*		@method winning
+	*/
 	p.winning = function(){
 		// Todo: allow for replaying the game
 	};
