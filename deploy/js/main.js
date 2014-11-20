@@ -36,7 +36,7 @@
 		this.yDirection = 6;
 		this.easing = 7;
 		this.isPlaying = false;
-		
+
 		// add the container to the stage
 		this.stage.addChild(this.gameContainer);
 
@@ -74,25 +74,19 @@
 	{
 		requestAnimFrame(this.animate);
 		this.renderer.render(this.stage);
-
+		// trace(frame);
 		if(this.isPlaying){
-			// get the ball from the gameContainer
-			// must be better way than by index????
-			// var ball = this.gameContainer.getChildAt(56);
-			// var paddle = this.gameContainer.getChildAt(55);	
-			
-			// logic for ball bounces off the walls
+			// logic for ball bouncing off the walls
 			if(this.ball.position.x <= 0){
 				this.xDirection *= -1;
 			} else if(this.ball.position.x >= 640 - this.ball.width) {
 				this.xDirection *= -1;
 			}
 
-			// logic for this.ball bouncing off the roof
+			// logic for ball bouncing off the roof
 			if(this.ball.position.y >= 480){
-				// session ends
-				// this.initGameState();
-				// this.livesRemaining--;
+				this.isPlaying = false;
+				this.loseLife();
 			} else if(this.ball.position.y <= 0) {
 				this.yDirection *= -1;
 			}
@@ -102,26 +96,27 @@
 			this.ball.position.x += this.xDirection;
 
 			// if the ball hits the paddle
-			var xdist = this.ball.position.x - this.paddle.position.x;
+			var xdist = (this.ball.position.x + this.ball.width/2) - (this.paddle.position.x + this.paddle.width/2);
 			if(xdist > -this.paddle.width/2 && xdist < this.paddle.width/2){
-				var ydist = this.paddle.position.y - this.ball.position.y;
+				var ydist = (this.paddle.position.y + (this.paddle.height/2)) - (this.ball.position.y + (this.ball.height/2)) ;
 				if(ydist > - this.paddle.height/2 && ydist < this.paddle.height/2){
 					this.yDirection *= -1;
 					this.checkHitLocation(this.ball,this.paddle);
-					// trace('hit code!!!');
 				}
 			}
 
 			// if the ball hits a brick
-
 			for(var i = 0; i < this.brickContainer.children.length; i++){
 				var brick = this.brickContainer.children[i];
-				var xcol = brick.position.x - this.ball.position.x;
+				var xcol = (this.ball.position.x + this.ball.width/2) - (brick.position.x + brick.width/2);
+				// var xcol = brick.position.x - (this.ball.position.x + this.ball.width/2);
 				if(xcol > -brick.width/2 && xcol < brick.width/2){
 					var ycol = brick.position.y - this.ball.position.y;
 					if(ycol > -brick.height/2 && ycol < brick.height/2){
 						this.yDirection *= -1;
 						this.brickContainer.removeChild(brick);
+						this.gameScore += 10;
+						this.updateScoreDisplay();
 					}
 				}
 			}
@@ -129,12 +124,22 @@
 			// if user presses left arrow
 			if(paddleLeft){
 				this.paddle.position.x -= 10;
+				if(this.paddle.position.x <= 0){
+					this.paddle.position.x = 0;
+				}
 			}
 
 			// if user presses right arrow
 			if(paddleRight){
 				this.paddle.position.x += 10;
+				if(this.paddle.position.x >= 640 - this.paddle.width){
+					this.paddle.position.x = 640 - this.paddle.width;
+				}
 			}
+		}
+
+		if(!this.isPlaying){
+
 		}
 	};
 
@@ -143,8 +148,30 @@
 		var hitPercent, ballPosition;
 		ballPosition = ball.position.x - paddle.position.x;
 		hitPercent = (ballPosition / (paddle.width - ball.width)) - .5;
-		this.xDirection = hitPercent * 10;
-		this.yDirection *= 1.03;
+		this.xDirection = hitPercent * 7;
+		this.yDirection *= 1.01;
+	};
+
+	p.loseLife = function(){
+		this.livesRemaining--;
+		this.updateLivesDisplay();
+		if(this.livesRemaining === 0){
+			this.gameOver();
+		} else {
+			this.resetGame();	
+		}
+		this.resetDefaults();
+	};
+
+	p.levelUp = function(){
+		this.currentLevel++;
+		this.updateLevelDisplay();
+	};
+
+	p.resetDefaults = function(){
+		// new properties that I've added.
+		this.xDirection = -1;
+		this.yDirection = 6;
 	};
 
 	/**
@@ -183,8 +210,19 @@
 	*/
 	p.initGameState = function()
 	{
+		this.buildUiHolder();
+		this.updateLevelDisplay();
+		this.updateScoreDisplay();
+		this.updateLivesDisplay();
+		this.buildBricks();
+		this.buildPaddle();
+		this.buildBall();
+		this.buildQuitButton();
+		this.addKeyListeners();
 		this.isPlaying = true;
-		
+	};
+
+	p.buildUiHolder = function(){
 		// add UI
 		//basic grey background shape
 		this.uiHolder = new PIXI.Graphics();
@@ -192,7 +230,9 @@
 		this.uiHolder.drawRect(0, 440, 640, 40);
 		this.uiHolder.endFill();
 		this.gameContainer.addChild(this.uiHolder);
+	};
 
+	p.buildQuitButton = function(){
 		// quit button
 		var quitButton = PIXI.Sprite.fromFrame("QuitButton0000");
 		quitButton.buttonMode = true;
@@ -201,12 +241,26 @@
 		quitButton.position.x = 5;
 		quitButton.position.y = 448;
 		this.uiHolder.addChild(quitButton);
+	};
 
-		//level/score/lives text
-		this.updateLevelDisplay();
-		this.updateScoreDisplay();
-		this.updateLivesDisplay();
+	p.buildPaddle = function(){
+		var paddle = PIXI.Sprite.fromFrame("Paddle0000");
+		paddle.position.x = 320 - Math.round(paddle.texture.width/2);
+		paddle.position.y = 400;
+		paddle.width = paddle.width * 2
+		this.gameContainer.addChild(paddle);
+		this.paddle = paddle;
+	};
 
+	p.buildBall = function(){
+		var ball = PIXI.Sprite.fromFrame("Ball0000");
+		ball.position.x = 320 - Math.round(ball.texture.width/2);
+		ball.position.y = 250;
+		this.gameContainer.addChild(ball);
+		this.ball = ball;
+	};
+
+	p.buildBricks = function(){
 		//build a layout of bricks
 		//Note: This is placeholder code
 		this.brickContainer = new PIXI.DisplayObjectContainer();
@@ -217,38 +271,14 @@
 				var brick = PIXI.Sprite.fromFrame("Brick000" + Math.floor(Math.random() * 4));
 				brick.position.x = col * (brick.texture.width + 1);
 				brick.position.y = row * (brick.texture.height + 1);
-				brick.anchor.x = 0.5;
-				brick.anchor.y = 0.5;
-				this.brickContainer.position.x = 0;
-				this.brickContainer.position.y = 0;
 				this.brickContainer.addChild(brick);
-				// this.bricks.push(brick);
 			}
 		}
 		this.gameContainer.addChild(this.brickContainer);
-
-		//add the ball and paddle
-		var paddle = PIXI.Sprite.fromFrame("Paddle0000");
-		paddle.position.x = 320 - Math.round(paddle.texture.width/2);
-		paddle.position.y = 400;
-		paddle.anchor.x = 0.5;
-		paddle.anchor.y = 0.5;
-		this.gameContainer.addChild(paddle);
-		this.paddle = paddle;
-
-		var ball = PIXI.Sprite.fromFrame("Ball0000");
-		ball.position.x = 320 - Math.round(ball.texture.width/2);
-		ball.position.y = 250;
-		ball.anchor.x = 0.5;
-		ball.anchor.y = 0.5;
-		this.gameContainer.addChild(ball);
-		this.ball = ball;
-		
-		this.addKeyListeners();
 	};
 
+	// listen for keydown, attached to the document
 	p.addKeyListeners = function(){
-		// trace(object,this,document);
 		document.addEventListener('keydown',function(evt){
 			switch(evt.which){
 				case 37:
@@ -259,6 +289,7 @@
 					break;
 			}
 		});
+		// listen for keyup, attached to the document
 		document.addEventListener('keyup',function(evt){
 			switch(evt.which){
 				case 37:
@@ -269,24 +300,6 @@
 					break;
 			}
 		});
-		
-	};
-
-	/**
-	*  Leave the game state
-	*  @method  leaveGameState
-	*/
-	p.leaveGameState = function()
-	{
-		while (this.gameContainer.children.length)
-		{
-			this.gameContainer.removeChild(this.gameContainer.getChildAt(0));
-		}
-		this.uiHolder = null;
-		this.levelText = null
-		this.scoreText = null;
-		this.livesText = null;
-		this.initTitleState();
 	};
 
 	/**
@@ -303,7 +316,7 @@
 			this.levelText.position.x = 90;
 			this.levelText.position.y = 450;
 		}
-		this.levelText.text = "Level: " + this.currentLevel;
+		this.levelText.setText("Level: " + this.currentLevel);
 	};
 
 	/**
@@ -320,7 +333,7 @@
 			this.scoreText.position.x = 420;
 			this.scoreText.position.y = 450;
 		}
-		this.scoreText.text = "Score: " + this.gameScore;
+		this.scoreText.setText("Score: " + this.gameScore);
 	};
 
 	/**
@@ -337,8 +350,77 @@
 			this.livesText.position.x = 550;
 			this.livesText.position.y = 450;
 		}
-		this.livesText.text = "Lives: " + this.livesRemaining;
+		this.livesText.setText("Lives: " + this.livesRemaining);
 	};
+
+	p.resetGame = function(){
+		if (!this.loseText)
+		{
+			this.loseText = new PIXI.Text("", {font: "40px Helvetica, Arial", fill: "#000"});
+			this.gameContainer.addChild(this.loseText);
+			this.loseText.anchor.x = 0.5;
+			this.loseText.anchor.y = 0.5;
+			this.loseText.position.x = 320;
+			this.loseText.position.y = 280;
+		}
+		this.loseText.setText("You Lose!!!");
+
+		var playButton = PIXI.Sprite.fromFrame("PlayButton0000");
+		playButton.buttonMode = true;
+		playButton.interactive = true;
+		playButton.mouseup = this.continueGame.bind(this);
+		playButton.position.x = 320 - Math.round(playButton.texture.width/2);
+		playButton.position.y = 240 - Math.round(playButton.texture.height/2);
+		this.gameContainer.addChild(playButton);
+	};
+
+	p.continueGame = function(evt){
+		this.gameContainer.removeChild(evt.target);
+		this.gameContainer.removeChild(this.loseText);
+		this.brickContainer.removeChildren();
+		this.gameContainer.removeChild(this.brickContainer);
+		this.gameContainer.removeChild(this.ball);
+		this.gameContainer.removeChild(this.paddle);
+		this.buildBricks();
+		this.buildPaddle();
+		this.buildBall();
+		this.isPlaying = true;
+	};
+
+	p.gameOver = function(){
+		if (!this.overText)
+		{
+			this.overText = new PIXI.Text("", {font: "50px Helvetica, Arial", fill: "#ffffff"});
+			this.gameContainer.addChild(this.overText);
+			this.overText.anchor.x = 0.5;
+			this.overText.anchor.y = 0.5;
+			this.overText.position.x = 320;
+			this.overText.position.y = 100;
+		}
+		this.overText.setText("Game Over");
+		window.setTimeout(this.leaveGameState.bind(this),3000);
+	};
+
+	/**
+	*  Leave the game state
+	*  @method  leaveGameState
+	*/
+	p.leaveGameState = function()
+	{
+		while (this.gameContainer.children.length)
+		{
+			this.gameContainer.removeChild(this.gameContainer.getChildAt(0));
+		}
+		this.uiHolder = null;
+		this.levelText = null
+		this.scoreText = null;
+		this.livesText = null;
+		this.overText = null;
+		this.loseText = null;
+		this.initTitleState();
+		this.resetDefaults();
+	};
+
 
 	// Create the game
 	new BrickBreaker();
