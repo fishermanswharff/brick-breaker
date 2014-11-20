@@ -226,6 +226,16 @@
 	*/
 	p.initTitleState = function()
 	{
+		if (!this.nameText)
+		{
+			this.nameText = new PIXI.Text("", {font: "50px Helvetica, Arial", fill: "#000"});
+			this.gameContainer.addChild(this.nameText);
+			this.nameText.anchor.x = 0.5;
+			this.nameText.anchor.y = 0.5;
+			this.nameText.position.x = 320;
+			this.nameText.position.y = 280;
+		}
+		this.nameText.setText("Jason Wharff");
 		// add assets and show the title screen
 		var playButton = PIXI.Sprite.fromFrame("PlayButton0000");
 		playButton.buttonMode = true;
