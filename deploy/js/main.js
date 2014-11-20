@@ -107,10 +107,6 @@
 
 			// if the ball hits a brick
 			for(var i = 0; i < this.brickContainer.children.length; i++){
-
-				// for testing purposes
-				this.brickContainer.removeChild(brick);
-
 				var brick = this.brickContainer.children[i];
 				var xcol = (this.ball.position.x + this.ball.width/2) - (brick.position.x + brick.width/2);
 				if(xcol > -brick.width/2 && xcol < brick.width/2){
@@ -305,9 +301,8 @@
 	};
 
 	p.buildBricks = function(){
-		//build a layout of bricks
-		//Note: This is placeholder code
-		this.brickContainer = new PIXI.DisplayObjectContainer();
+		
+		/*
 		for (var col=0;col < 9;col++)
 		{
 			for (var row=0;row < 6;row++)
@@ -318,6 +313,86 @@
 				this.brickContainer.addChild(brick);
 			}
 		}
+		*/
+
+		this.brickContainer = new PIXI.DisplayObjectContainer();
+		
+		// object of multiple x*y arrays, with 0/1 values, or colors in hex
+		var levels = {
+			level1: 
+				[
+					[1, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 1, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 1, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 1, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 1, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 1, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 1, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 1, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 1]
+				],
+			level2:
+				[
+					[1, 0, 0, 0, 0, 0, 0, 0, 1],
+					[0, 0, 0, 1, 1, 1, 0, 0, 0],
+					[0, 0, 1, 1, 1, 1, 1, 0, 0],
+					[0, 1, 1, 1, 1, 1, 1, 1, 0],
+					[0, 1, 1, 1, 1, 1, 1, 1, 0],
+					[0, 0, 1, 1, 1, 1, 1, 0, 0],
+					[0, 0, 0, 1, 1, 1, 0, 0, 0],
+					[0, 0, 0, 0, 1, 0, 0, 0, 0],
+					[1, 0, 0, 0, 0, 0, 0, 0, 1]
+				],
+			level3:
+				[
+					[1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1],
+					[1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0],
+					[1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+					[1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1],
+					[1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1],
+					[1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1],
+					[1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+					[1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1],
+					[1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1]
+				]
+		};
+		if(this.currentLevel == 1){
+			for(var i = 0; i < levels.level1.length; i++){
+				for(var j = 0; j < levels.level1[i].length; j++){
+					if(levels.level1[i][j] == 1){
+						var brick = PIXI.Sprite.fromFrame("Brick000" + Math.floor(Math.random() * 4));
+						brick.position.x = i * (brick.texture.width + 1);
+						brick.position.y = j * (brick.texture.height + 1);
+						this.brickContainer.addChild(brick);
+					}
+				}
+			}
+
+		} else if (this.currentLevel == 2){
+			for(var i = 0; i < levels.level2.length; i++){
+				for(var j = 0; j < levels.level2[i].length; j++){
+					if(levels.level2[i][j] == 1){
+						var brick = PIXI.Sprite.fromFrame("Brick000" + Math.floor(Math.random() * 4));
+						brick.position.x = j * (brick.texture.width + 1);
+						brick.position.y = i * (brick.texture.height + 1);
+						this.brickContainer.addChild(brick);
+					}
+				}
+			}
+		} else if (this.currentLevel == 3){
+			for(var i = 0; i < levels.level3.length; i++){
+				for(var j = 0; j < levels.level3[i].length; j++){
+					if(levels.level3[i][j] == 1){
+						var brick = PIXI.Sprite.fromFrame("Brick000" + Math.floor(Math.random() * 4));
+						brick.position.x = i * (brick.texture.width + 1);
+						brick.position.y = j * (brick.texture.height + 1);
+						this.brickContainer.addChild(brick);
+					}
+				}
+			}
+		}
+
+		
 		this.gameContainer.addChild(this.brickContainer);
 	};
 
